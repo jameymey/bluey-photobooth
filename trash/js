@@ -13,7 +13,6 @@ const PHOTOBOOTH_FRAME_INTERVAL = 200;
 
 export default function Home() {
   const [currentFrame, setCurrentFrame] = useState(0);
-  const [isAnimating, setIsAnimating] = useState(false);
 
   useEffect(() => {
     let frameIndex = 0;
@@ -23,16 +22,14 @@ export default function Home() {
     const loadedFrames = new Array(9).fill(false);
     let loadedCount = 0;
 
-    // Preload all frames
     PHOTOBOOTH_FRAMES.forEach((src, index) => {
       const img = new Image();
       img.onload = () => {
         loadedCount++;
         loadedFrames[index] = true;
-        console.log(`Loaded frame ${index + 1}/9`);
-
-        if (loadedCount === 1) {
-          setIsAnimating(true);
+        // start animation only after all frames are loaded to avoid
+        // visual glitches when frames are still being fetched
+        if (loadedCount === PHOTOBOOTH_FRAMES.length) {
           animationId = requestAnimationFrame(animatePhotobooth);
         }
       };
@@ -49,10 +46,7 @@ export default function Home() {
       if (timestamp - lastFrameTime >= PHOTOBOOTH_FRAME_INTERVAL) {
         setCurrentFrame(frameIndex);
 
-        // Update frame index
         frameIndex += direction;
-
-        // Bounce at edges
         if (frameIndex >= loadedFrames.length - 1) {
           frameIndex = loadedFrames.length - 1;
           direction = -1;
@@ -63,6 +57,7 @@ export default function Home() {
 
         lastFrameTime = timestamp;
       }
+
       animationId = requestAnimationFrame(animatePhotobooth);
     }
 
@@ -72,23 +67,32 @@ export default function Home() {
   }, []);
 
   return (
-    <div
-      className="flex flex-col items-center justify-center min-h-screen gap-4 md:gap-8 px-4"
-      style={{ backgroundColor: "white" }}
-    >
-      <img
-        src={PHOTOBOOTH_FRAMES[currentFrame]}
-        alt="Photobooth animation"
-        className="w-full max-w-[300px] sm:max-w-[400px] md:max-w-[500px] lg:max-w-[700x] h-auto object-contain"
-      />
-      <Link href="/menu">
-        <Button
-          size="lg"
-          className="text-base md:text-lg px-6 md:px-8 py-4 md:py-6"
-        >
-          Start
-        </Button>
-      </Link>
+    <div className="flex flex-col items-center justify-center min-h-screen gap-8 px-4 bg-white">
+      {/* PNG animation */}
+      <div
+        className="w-[600px] h-[600px] bg-transparent border-2 border-gray-300 rounded-lg flex items-center justify-center"
+        style={{ width: 600, height: 600, margin: "0 auto" }}
+      >
+        <div
+          aria-hidden
+          className="w-full h-full"
+          style={{
+            backgroundImage: `url(${PHOTOBOOTH_FRAMES[currentFrame]})`,
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+            backgroundRepeat: "no-repeat",
+            width: "100%",
+            height: "100%",
+          }}
+        />
+      </div>
+
+      {/* Start Button */}
+      <div style={{ display: "flex", justifyContent: "center", width: "100%" }}>
+        <Link href="/layout" style={{ display: "inline-block" }}>
+          <Button size="lg">Start</Button>
+        </Link>
+      </div>
     </div>
   );
 }
