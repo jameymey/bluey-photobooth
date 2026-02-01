@@ -1,6 +1,17 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
 
+// IndexedDB helper using idb
+import { openDB } from "idb";
+
+const DB_NAME = "photobooth-db";
+const STORE_NAME = "photos";
+
+async function getPhotosFromDB() {
+  const db = await openDB(DB_NAME, 1);
+  return await db.get(STORE_NAME, "photobooth-photos");
+}
+
 const PHOTO_SLOTS = [
   { x: 55, y: 93, width: 1090, height: 657 },
   { x: 55, y: 771, width: 1090, height: 657 },
@@ -24,11 +35,9 @@ export default function FinalPage({ searchParams }) {
 
   // Load photos from localStorage or searchParams
   useEffect(() => {
-    let loaded = [];
-    try {
-      loaded = JSON.parse(localStorage.getItem("photobooth-photos") || "[]");
-    } catch {}
-    setPhotos(loaded);
+    getPhotosFromDB().then((loaded) => {
+      setPhotos(loaded || []);
+    });
   }, []);
 
   // Compose final strip (draw photos, then SVG frame directly onto canvas)

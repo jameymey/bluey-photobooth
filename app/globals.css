@@ -120,5 +120,14 @@
   }
   body {
     @apply bg-background text-foreground;
+    font-family: 'myfont', sans-serif;
   }
+}
+
+@font-face {
+  font-family: 'myfont';
+  src: url('/fonts/Myfont-Regular.otf') format('opentype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
 }

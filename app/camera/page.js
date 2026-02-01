@@ -2,6 +2,28 @@
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 
+// IndexedDB helper using idb
+import { openDB } from "idb";
+
+const DB_NAME = "photobooth-db";
+const STORE_NAME = "photos";
+
+async function savePhotosToDB(photos) {
+  const db = await openDB(DB_NAME, 1, {
+    upgrade(db) {
+      if (!db.objectStoreNames.contains(STORE_NAME)) {
+        db.createObjectStore(STORE_NAME);
+      }
+    },
+  });
+  await db.put(STORE_NAME, photos, "photobooth-photos");
+}
+
+async function getPhotosFromDB() {
+  const db = await openDB(DB_NAME, 1);
+  return await db.get(STORE_NAME, "photobooth-photos");
+}
+
 const PHOTO_SLOTS = [
   { x: 55, y: 93, width: 1090, height: 657 },
   { x: 55, y: 771, width: 1090, height: 657 },
@@ -56,8 +78,9 @@ export default function CameraPage() {
   // When 4 photos are taken, save to localStorage and redirect to /final
   useEffect(() => {
     if (photos.length === 4) {
-      localStorage.setItem("photobooth-photos", JSON.stringify(photos));
-      router.push("/final");
+      savePhotosToDB(photos).then(() => {
+        router.push("/final");
+      });
     }
   }, [photos, router]);
 
@@ -115,7 +138,9 @@ export default function CameraPage() {
         </button>
       )}
       <button
-        onClick={() => {
+        onClick={async () => {
+          const db = await openDB(DB_NAME, 1);
+          await db.delete(STORE_NAME, "photobooth-photos");
           setPhotos([]);
         }}
         style={{ marginTop: 8 }}
