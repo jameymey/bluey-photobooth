@@ -51,8 +51,6 @@ export default function Home() {
 
         // Update frame index
         frameIndex += direction;
-
-        // Bounce at edges
         if (frameIndex >= loadedFrames.length - 1) {
           frameIndex = loadedFrames.length - 1;
           direction = -1;

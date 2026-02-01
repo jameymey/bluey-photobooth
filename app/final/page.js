@@ -1,7 +1,5 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
-
-// IndexedDB helper using idb
 import { openDB } from "idb";
 
 const DB_NAME = "photobooth-db";
@@ -23,30 +21,23 @@ const CANVAS_HEIGHT = 3300;
 
 export default function FinalPage({ searchParams }) {
   const canvasRef = useRef(null);
-  const [frameSvg, setFrameSvg] = useState(null); // Not used, handled by PhotoFrame
+  const [frameSvg, setFrameSvg] = useState(null);
   const [photos, setPhotos] = useState([]);
   const [frameColor, setFrameColor] = useState("#88cafc");
 
-  // Load frame SVG (replace with actual import or fetch as needed)
-  useEffect(() => {
-    // Example: fetch('/template/frame.svg').then(...)
-    // setFrameSvg(svgString)
-  }, []);
+  useEffect(() => {}, []);
 
-  // Load photos from localStorage or searchParams
   useEffect(() => {
     getPhotosFromDB().then((loaded) => {
       setPhotos(loaded || []);
     });
   }, []);
 
-  // Compose final strip (draw photos, then SVG frame directly onto canvas)
   useEffect(() => {
     if (photos.length !== 4) return;
     const canvas = canvasRef.current;
     const ctx = canvas.getContext("2d");
     ctx.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
-    // Draw photos
     let loadedCount = 0;
     photos.forEach((photo, idx) => {
       const img = new window.Image();
@@ -79,12 +70,12 @@ export default function FinalPage({ searchParams }) {
           slot.height,
         );
         loadedCount++;
-        // When all photos are drawn, draw the SVG frame
+
         if (loadedCount === 4) {
           fetch("/template/photoframe.svg")
             .then((res) => res.text())
             .then((svg) => {
-              // Replace frame color (default #1F324F) with selected color
+              // Replace frame color
               const coloredSvg = svg
                 .replace(/fill="#1F324F"/gi, `fill="${frameColor}"`)
                 .replace(/stroke="#1F324F"/gi, `stroke="${frameColor}"`);
@@ -110,7 +101,6 @@ export default function FinalPage({ searchParams }) {
     link.click();
   };
 
-  // Color palette
   const colorOptions = [
     { hex: "#edcc6f", label: "#edcc6f" },
     { hex: "#d2ebff", label: "#d2ebff" },

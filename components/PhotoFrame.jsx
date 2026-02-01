@@ -10,7 +10,6 @@ export default function PhotoFrame({ color = "#88cafc", width = 1200, height = 3
     fetch("/template/photoframe-frame.svg")
       .then((res) => res.text())
       .then((svg) => {
-        // Replace all frame color fills (all #1F324F) with the selected color
         const coloredSvg = svg.replace(/fill="#1F324F"/gi, `fill="${color}"`);
         setSvgContent(coloredSvg);
       });
