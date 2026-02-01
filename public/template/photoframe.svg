@@ -1,15 +1,18 @@
-<svg width="1200" height="3300" viewBox="0 0 1200 3300" fill="none" xmlns="http://www.w3.org/2000/svg">
+<svg width="624" height="1800" viewBox="0 0 624 1800" fill="none" xmlns="http://www.w3.org/2000/svg">
   <!-- Top frame -->
-  <rect x="0" y="0" width="1200" height="93" fill="#1F324F"/>
+  <rect x="0" y="0" width="624" height="29" fill="#1F324F"/>
   <!-- Bottom frame -->
-  <rect x="0" y="2784" width="1200" height="516" fill="#1F324F"/>
+  <rect x="0" y="1773" width="624" height="27" fill="#1F324F"/>
   <!-- Left frame -->
-  <rect x="0" y="0" width="55" height="3300" fill="#1F324F"/>
+  <rect x="0" y="0" width="27" height="1800" fill="#1F324F"/>
   <!-- Right frame -->
-  <rect x="1145" y="0" width="55" height="3300" fill="#1F324F"/>
+  <rect x="597" y="0" width="27" height="1800" fill="#1F324F"/>
 
-  <!-- Gap lines between photos (match slot math) -->
-  <line x1="55" y1="750" x2="1145" y2="750" stroke="#1F324F" stroke-width="42"/>
-  <line x1="55" y1="1428" x2="1145" y2="1428" stroke="#1F324F" stroke-width="42"/>
-  <line x1="55" y1="2106" x2="1145" y2="2106" stroke="#1F324F" stroke-width="42"/>
+  <!-- Gap bars between photos (filled so gaps are fully covered) -->
+  <rect x="27" y="435" width="570" height="20" fill="#1F324F" />
+  <rect x="27" y="851" width="570" height="20" fill="#1F324F" />
+  <rect x="27" y="1267" width="570" height="20" fill="#1F324F" />
+<rect y="1680" width="624" height="120" fill="#1F324F"/>
+
+
 </svg>

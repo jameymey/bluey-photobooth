@@ -20,10 +20,7 @@ export default function FinalPage() {
       >
         Result
       </h1>
-      <div
-        className="w-full max-w-[420px] md:max-w-[900px]"
-        style={{ position: "relative" }}
-      >
+      <div className="w-full" style={{ position: "relative" }}>
         <canvas
           ref={canvasRef}
           width={CANVAS_WIDTH}
@@ -32,7 +29,7 @@ export default function FinalPage() {
             display: "block",
             margin: "16px auto",
             border: "1px solid #ccc",
-            width: "100%",
+            width: "230px",
             height: "auto",
           }}
         />
