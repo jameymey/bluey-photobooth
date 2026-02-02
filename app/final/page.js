@@ -34,6 +34,7 @@ export default function FinalPage() {
           }}
         />
       </div>
+
       <div
         style={{ display: "flex", gap: 12, alignItems: "center", marginTop: 8 }}
       >

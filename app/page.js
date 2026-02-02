@@ -70,14 +70,11 @@ export default function Home() {
   }, []);
 
   return (
-    <div
-      className="flex flex-col items-center justify-center min-h-screen gap-4 md:gap-8 px-4"
-      style={{ backgroundColor: "white" }}
-    >
+    <div className="flex flex-col items-center justify-center min-h-screen gap-4 md:gap-8 px-4 bg-background text-foreground">
       <img
         src={PHOTOBOOTH_FRAMES[currentFrame]}
         alt="Photobooth animation"
-        className="w-full max-w-[300px] sm:max-w-[400px] md:max-w-[500px] lg:max-w-[700x] h-auto object-contain"
+        className="w-full max-w-[300px] sm:max-w-[400px] md:max-w-[500px] lg:max-w-[700px] h-auto object-contain"
       />
       <Link href="/menu">
         <Button

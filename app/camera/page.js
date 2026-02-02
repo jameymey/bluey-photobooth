@@ -4,9 +4,25 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { savePhotosToDB, deletePhotosFromDB } from "../../lib/camera/db";
 import { useCamera } from "../../lib/camera/useCamera";
+import { Camera, FlipHorizontal2 } from "lucide-react";
 
 export default function CameraPage() {
   const router = useRouter();
+  const [maxPhotos, setMaxPhotos] = useState(4);
+
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem("photobooth-layout");
+      if (!raw) return;
+      const parsed = JSON.parse(raw);
+      const key = parsed?.layout || parsed;
+      if (key === "3") setMaxPhotos(3);
+      else setMaxPhotos(4);
+    } catch (e) {
+      setMaxPhotos(4);
+    }
+  }, []);
+
   const {
     videoRef,
     photos,
@@ -18,7 +34,7 @@ export default function CameraPage() {
     startCapture,
     isMirror,
     setMirror,
-  } = useCamera(true);
+  } = useCamera(true, maxPhotos);
 
   // Filter state (safe defaults)
   const [filter, setFilter] = useState("natural");
@@ -36,10 +52,10 @@ export default function CameraPage() {
   };
 
   useEffect(() => {
-    if (photos.length === 4) {
+    if (photos.length === maxPhotos) {
       savePhotosToDB(photos);
     }
-  }, [photos]);
+  }, [photos, maxPhotos]);
 
   return (
     <div
@@ -97,6 +113,70 @@ export default function CameraPage() {
                 display: "inline-block",
               }}
             >
+              {/* Controls placed above the video */}
+              <div
+                style={{
+                  display: "flex",
+                  gap: 8,
+                  alignItems: "center",
+                  justifyContent: "center",
+                  marginBottom: 12,
+                }}
+              >
+                <label
+                  style={{ display: "flex", alignItems: "center", gap: 8 }}
+                >
+                  <span style={{ fontWeight: 600 }}>Filter</span>
+                  <select
+                    value={filter}
+                    onChange={(e) => setFilter(e.target.value)}
+                    disabled={capturing}
+                    style={{ padding: 6, borderRadius: 6 }}
+                  >
+                    <option value="natural">Natural</option>
+                    <option value="cool">Cool</option>
+                    <option value="warm">Warm</option>
+                    <option value="vivid">Vivid</option>
+                    <option value="soft">Soft</option>
+                    <option value="vintage">Vintage</option>
+                    <option value="mono">Mono</option>
+                  </select>
+                </label>
+
+                <label
+                  style={{ display: "flex", alignItems: "center", gap: 8 }}
+                >
+                  <span style={{ fontWeight: 600 }}>Timer</span>
+                  <select
+                    value={timer}
+                    onChange={(e) => setTimer(Number(e.target.value))}
+                    disabled={capturing}
+                    style={{ padding: 6, borderRadius: 6 }}
+                  >
+                    <option value={3}>3s</option>
+                    <option value={5}>5s</option>
+                    <option value={10}>10s</option>
+                  </select>
+                </label>
+
+                {/* camera button moved below the video */}
+
+                <button
+                  onClick={() => setMirror((m) => !m)}
+                  disabled={capturing}
+                  title={isMirror ? "Invert off" : "Invert on"}
+                  style={{
+                    padding: 8,
+                    borderRadius: 8,
+                    display: "inline-flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    fontWeight: 700,
+                  }}
+                >
+                  <FlipHorizontal2 size={18} />
+                </button>
+              </div>
               <video
                 ref={videoRef}
                 autoPlay
@@ -131,6 +211,51 @@ export default function CameraPage() {
                   }}
                 >
                   {countdown}
+                </div>
+              )}
+
+              {/* Camera button placed under the video, larger */}
+              {photos.length < maxPhotos && (
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "center",
+                    marginTop: 12,
+                  }}
+                >
+                  <button
+                    onClick={() =>
+                      startCapture(
+                        filterStyles[filter],
+                        filter === "vintage"
+                          ? {
+                              extras: {
+                                temp: 39,
+                                contrast: -18,
+                                highlights: 21,
+                                shadows: 76,
+                                vib: 29,
+                                vintette: 33,
+                              },
+                            }
+                          : undefined,
+                        filter,
+                      )
+                    }
+                    disabled={capturing}
+                    title={capturing ? "Please wait" : "Take photo"}
+                    style={{
+                      padding: 14,
+                      borderRadius: 12,
+                      display: "inline-flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      fontWeight: 700,
+                      background: "transparent",
+                    }}
+                  >
+                    <Camera size={32} />
+                  </button>
                 </div>
               )}
             </div>
@@ -184,104 +309,8 @@ export default function CameraPage() {
         </div>
       </div>
 
-      {/* Controls */}
-      <div
-        style={{
-          display: "flex",
-          gap: 12,
-          marginTop: 16,
-          flexWrap: "wrap",
-          justifyContent: "center",
-        }}
-      >
-        {photos.length < 4 && (
-          <>
-            <label
-              className="text-base md:text-lg lg:text-xl"
-              style={{ fontWeight: 600 }}
-            >
-              Filter:
-              <select
-                value={filter}
-                onChange={(e) => setFilter(e.target.value)}
-                className="ml-2 p-3 text-base md:text-lg lg:text-lg"
-                style={{ marginLeft: 8, padding: 6, borderRadius: 6 }}
-                disabled={capturing}
-              >
-                <option value="natural">Natural</option>
-                <option value="cool">Cool</option>
-                <option value="warm">Warm</option>
-                <option value="vivid">Vivid</option>
-                <option value="soft">Soft</option>
-                <option value="vintage">Vintage</option>
-                <option value="mono">Mono</option>
-              </select>
-            </label>
-
-            <label
-              className="text-base md:text-lg lg:text-xl"
-              style={{ fontWeight: 600 }}
-            >
-              Timer:
-              <select
-                value={timer}
-                onChange={(e) => setTimer(Number(e.target.value))}
-                className="ml-2 p-3 text-base md:text-lg lg:text-lg"
-                style={{ marginLeft: 8, padding: 6, borderRadius: 6 }}
-                disabled={capturing}
-              >
-                <option value={3}>3s</option>
-                <option value={5}>5s</option>
-                <option value={10}>10s</option>
-              </select>
-            </label>
-
-            <button
-              onClick={() =>
-                startCapture(
-                  filterStyles[filter],
-                  filter === "vintage"
-                    ? {
-                        extras: {
-                          temp: 39,
-                          contrast: -18,
-                          highlights: 21,
-                          shadows: 76,
-                          vib: 29,
-                          vintette: 33,
-                        },
-                      }
-                    : undefined,
-                  filter,
-                )
-              }
-              disabled={capturing}
-              className="px-6 py-3 text-base md:text-lg lg:text-xl"
-              style={{
-                padding: "12px 22px",
-                borderRadius: 10,
-                fontWeight: "700",
-              }}
-            >
-              {capturing ? `Wait...` : `Start`}
-            </button>
-
-            <button
-              onClick={() => setMirror((m) => !m)}
-              disabled={capturing}
-              className="px-5 py-2 text-base md:text-lg lg:text-lg"
-              style={{
-                padding: "10px 18px",
-                borderRadius: 8,
-                fontWeight: "700",
-              }}
-            >
-              {isMirror ? "Invert Off" : "Invert On"}
-            </button>
-          </>
-        )}
-      </div>
-      {photos.length === 4 && (
+      {/* previous controls moved above the video; nothing to render here */}
+      {photos.length === maxPhotos && (
         <button
           onClick={() => router.push("/final")}
           style={{
@@ -297,7 +326,7 @@ export default function CameraPage() {
           Done
         </button>
       )}
-      {photos.length === 4 && (
+      {photos.length === maxPhotos && (
         <button
           onClick={async () => {
             await deletePhotosFromDB();
