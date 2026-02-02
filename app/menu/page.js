@@ -38,9 +38,13 @@ export default function Layout() {
             alt="4 pose vertical"
             style={{
               width: "200px",
-              height: "auto",
+              height: "280px",
+              objectFit: "contain",
+              objectPosition: "center",
+              background: "var(--card)",
               borderRadius: "8px",
               boxShadow: "0 2px 8px rgba(0,0,0,0.15)",
+              display: "block",
             }}
           />
           <div style={{ marginTop: "0.5rem", textAlign: "center" }}>
@@ -74,9 +78,13 @@ export default function Layout() {
             alt="3 pose preview"
             style={{
               width: "200px",
-              height: "auto",
+              height: "280px",
+              objectFit: "contain",
+              objectPosition: "center",
+              background: "var(--card)",
               borderRadius: "8px",
               boxShadow: "0 2px 8px rgba(0,0,0,0.15)",
+              display: "block",
             }}
           />
           <div style={{ marginTop: "0.5rem", textAlign: "center" }}>
@@ -110,9 +118,13 @@ export default function Layout() {
             alt="4 pose horizontal"
             style={{
               width: "200px",
-              height: "auto",
+              height: "280px",
+              objectFit: "contain",
+              objectPosition: "center",
+              background: "var(--card)",
               borderRadius: "8px",
               boxShadow: "0 2px 8px rgba(0,0,0,0.15)",
+              display: "block",
             }}
           />
           <div style={{ marginTop: "0.5rem", textAlign: "center" }}>
